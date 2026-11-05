@@ -134,16 +134,13 @@ The model's class confidence is not a calibrated probability that a message is f
 
 ## Project Structure
 
-```text
-cyberguard/
+CyberGuard/
 ├── app.py
 ├── train_model.py
 ├── requirements.txt
-├── data/
 ├── models/
 │   └── sms_classifier.joblib
-├── experiments/
-├── engine/
+├── data/                 # Local dataset, excluded from Git
 ├── templates/
 │   ├── index.html
 │   └── awareness.html
@@ -155,14 +152,13 @@ cyberguard/
 │   └── images/
 └── tests/
     └── test_app.py
-```
 
 ## Installation and Setup
 
 ### 1. Clone the repository
 
 ```bash
-git clone <YOUR_REPOSITORY_URL>
+git clone https://github.com/bountyhunteranup/CyberGuard.git
 cd cyberguard
 ```
 
@@ -239,16 +235,51 @@ All seven tests have passed in the current development environment.
 
 ## Model Evaluation
 
-Add the actual held-out test-set evaluation results from `train_model.py` here.
+The classifier was evaluated using an 80/20 stratified train-test split.
 
-| Metric | Result |
-|---|---|
-| Accuracy | To be recorded |
-| Ham precision / recall / F1 | To be recorded |
-| Spam precision / recall / F1 | To be recorded |
-| Smishing precision / recall / F1 | To be recorded |
+### Dataset statistics
 
-Do not substitute training accuracy for test accuracy.
+| Metric | Value |
+|---|---:|
+| Original usable messages | 5,971 |
+| Conflicting message groups removed | 34 |
+| Cleaned messages | 5,797 |
+| Training samples | 4,637 |
+| Testing samples | 1,160 |
+
+### Test-set results
+
+| Class | Precision | Recall | F1-score | Support |
+|---|---:|---:|---:|---:|
+| Ham | 0.98 | 0.99 | 0.99 | 967 |
+| Spam | 0.83 | 0.77 | 0.80 | 87 |
+| Smishing | 0.94 | 0.88 | 0.91 | 106 |
+| Macro average | 0.92 | 0.88 | 0.90 | 1,160 |
+| Weighted average | 0.96 | 0.97 | 0.96 | 1,160 |
+
+**Overall accuracy: 96.55%**
+
+### Confusion Matrix
+
+Rows represent actual classes; columns represent predicted classes.
+
+Class order: ham, spam, smishing.
+
+| Actual / Predicted | Ham | Spam | Smishing |
+|---|---:|---:|---:|
+| Ham | 960 | 6 | 1 |
+| Spam | 15 | 67 | 5 |
+| Smishing | 5 | 8 | 93 |
+
+The classifier correctly identified 93 of 106 smishing messages,
+achieving approximately 88% recall for smishing.
+
+The dataset is imbalanced, with ham messages substantially
+outnumbering spam and smishing messages. Accuracy alone is
+therefore insufficient to describe model performance.
+
+These results represent one held-out split and do not guarantee
+equivalent performance on unseen real-world messages.
 
 ## Limitations
 
